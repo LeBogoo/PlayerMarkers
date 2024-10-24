@@ -8,6 +8,7 @@ import me.lebogo.playermarkers.commands.MarkersCommand;
 import me.lebogo.playermarkers.listeners.InventoryListener;
 import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -21,6 +22,7 @@ public final class PlayerMarkers extends JavaPlugin {
     public static final Component MANAGE_MARKER_TEXT = Component.text("Manage Marker");
     public static final Component BUY_MARKERS_TEXT = Component.text("Buy Marker");
     public static final Component DESTROY_MARKER_TEXT = Component.text("Destroy Marker");
+    public static final Component MOVE_MARKER_TEXT = Component.text("Move Marker");
     public static final Component RENAME_MARKER_TEXT = Component.text("Rename Marker");
     public static final Component BUY_FOR_TEXT = Component.text("Buy for");
     public static final Component YES_TEXT = Component.text("Yes");
@@ -29,6 +31,8 @@ public final class PlayerMarkers extends JavaPlugin {
     public static final Component INSUFFICIENT_BALANCE_TEXT = Component.text("Insufficient balance");
     public static PlayerMarkerManager markerManager;
     public static Economy econ = null;
+    public static FileConfiguration config = null;
+
 
     static {
         ConfigurationSerialization.registerClass(PlayerMarker.class, "PlayerMarker");
@@ -36,6 +40,10 @@ public final class PlayerMarkers extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
+        config = getConfig();
+
         if (!setupEconomy()) {
             getLogger().severe("Disabled due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
@@ -52,6 +60,7 @@ public final class PlayerMarkers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         markerManager = new PlayerMarkerManager(new File(getDataFolder(), "markers.yml"));
+        markerManager.updatePlayerMarkers();
     }
 
     private boolean setupEconomy() {

@@ -1,0 +1,7 @@
+# The price per Marker. Default: 5000
+markerPrice: 5000
+
+# The price multiplier for each additional Marker. Default: 5000
+# Example at multiplier 0: 5000 |  5000 |  5000 |  5000 |  5000
+# Example at multiplier 1: 5000 | 10000 | 15000 | 20000 | 25000
+markerMultiplier: 1

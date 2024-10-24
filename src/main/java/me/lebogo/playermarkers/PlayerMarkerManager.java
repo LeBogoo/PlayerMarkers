@@ -30,6 +30,12 @@ public class PlayerMarkerManager {
         }
     }
 
+    public static int getMarkerPrice(int index) {
+        int markerPrice = PlayerMarkers.config.getInt("markerPrice", 5000);
+        double markerMultiplier = PlayerMarkers.config.getDouble("markerMultiplier", 1);
+        return (int) (markerPrice + (0.0 + index * markerMultiplier * markerPrice));
+    }
+
     public List<PlayerMarker> getPlayerMarkers(UUID playerUUID) {
         return playerMarkers.getOrDefault(playerUUID, new ArrayList<>());
     }
@@ -56,8 +62,9 @@ public class PlayerMarkerManager {
 
             Map<String, List<PlayerMarker>> playerMarkersByWorld = new HashMap<>();
             List<PlayerMarker> allMarkers = getAllMarkers();
+
             for (PlayerMarker playerMarker : allMarkers) {
-                String worldName = playerMarker.getLocation().getWorld().getName();
+                String worldName = playerMarker.getWorldName();
                 List<PlayerMarker> markers = playerMarkersByWorld.getOrDefault(worldName, new ArrayList<>());
                 markers.add(playerMarker);
                 playerMarkersByWorld.put(worldName, markers);
@@ -87,6 +94,6 @@ public class PlayerMarkerManager {
         return playerMarkers.values().stream().reduce((markers1, markers2) -> {
             markers1.addAll(markers2);
             return markers1;
-        }).orElse(null);
+        }).orElse(new ArrayList<>());
     }
 }

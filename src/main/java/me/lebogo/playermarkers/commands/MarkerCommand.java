@@ -4,6 +4,7 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import me.lebogo.playermarkers.PlayerMarker;
 import me.lebogo.playermarkers.PlayerMarkers;
+import me.lebogo.playermarkers.gui.ManageGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Entity;
@@ -40,18 +41,25 @@ public class MarkerCommand implements BasicCommand {
 
         PlayerMarker playerMarker = playerMarkers.get(markerId);
 
+        if (args.length == 1) {
+            ManageGUI.openInventory(player, markerId);
+        }
+
+        if (args.length < 2) return;
+
         if (args[1].equalsIgnoreCase("rename")) {
             String newName = String.join(" ", args).substring(args[0].length() + args[1].length() + 2);
             playerMarker.setText(newName);
             player.sendMessage(Component.text("Marker was renamed to \"" + newName + "\".").color(TextColor.color(0x54fb54)));
             PlayerMarkers.markerManager.setPlayerMarkers(player.getUniqueId(), playerMarkers);
         } else if (args[1].equalsIgnoreCase("move")) {
-            playerMarker.setLocation(player.getLocation());
+            playerMarker.setPosition(player.getLocation().toVector());
             player.sendMessage(Component.text("Marker was moved to your current location.").color(TextColor.color(0x54fb54)));
             PlayerMarkers.markerManager.setPlayerMarkers(player.getUniqueId(), playerMarkers);
         } else {
             player.sendMessage(Component.text("Marker action \"" + args[1] + "\" does not exist.").color(TextColor.color(0xFB5454)));
         }
+
     }
 
     @Override
@@ -67,6 +75,9 @@ public class MarkerCommand implements BasicCommand {
             // list of numbers from 1 to size
             List<String> suggestions = new ArrayList<>();
             for (int i = 0; i < size; i++) {
+                if (args.length == 1 && !String.valueOf(i + 1).startsWith(args[0])) {
+                    continue;
+                }
                 suggestions.add(String.valueOf(i + 1));
             }
             return suggestions;
