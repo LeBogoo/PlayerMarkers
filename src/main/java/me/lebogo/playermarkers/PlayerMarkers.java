@@ -60,7 +60,9 @@ public final class PlayerMarkers extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         markerManager = new PlayerMarkerManager(new File(getDataFolder(), "markers.yml"));
-        markerManager.updatePlayerMarkers();
+
+        // Update player markers 5 seconds after server start and every 5 minutes after that
+        getServer().getScheduler().runTaskTimerAsynchronously(this, markerManager::updatePlayerMarkers, 20*5, 20 * 60 * 5);
     }
 
     private boolean setupEconomy() {
