@@ -1,0 +1,18 @@
+name: PlayerMarkers
+version: '1.0-SNAPSHOT'
+main: me.lebogo.playermarkers.PlayerMarkers
+api-version: '1.21'
+prefix: BluemapPlayerMarkers
+authors: [ LeBogo ]
+description: Allow your players to buy Markers on your BlueMap!
+website: https://lebogo.me
+dependencies:
+  server:
+    BlueMap:
+      load: AFTER
+      required: true
+      join-classpath: true
+    Vault:
+      load: AFTER
+      required: true
+      join-classpath: true
